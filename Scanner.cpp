@@ -19,11 +19,42 @@ bool word(string s)
 
     int state = 0;
     int charpos = 0;
-    /* replace the following todo the word dfa  **
+    /* replace the following todo the word dfa  ** */
+    /*
+        state 0 = q0 
+        state 1 = qy 
+        state 2 = q0q1 
+        state 3 = qsa 
+        state 4 = qs 
+        state 5 = qt
+        state 6 = qc
+        state 7 = q0qy ?
+    */
     while (s[charpos] != '\0')
       {
-        if (state == 0 && s[charpos] == 'a')
-        state = 1;
+        //state q0
+        //bmknhprg
+        if(state == 0 && (s[charpos] == 'b' || s[charpos] == 'g' || s[charpos] == 'h' || s[charpos] == 'k' || s[charpos] == 'm' || s[charpos] == 'n' || s[charpos] == 'h' || s[charpos] == 'p' || s[charpos] == 'r' || s[charpos] == 'g'))
+            {state = 1;}
+        //vowels, where i and e can be uppercase 
+        else if(state == 0 && (s[charpos] == 'a' || s[charpos] == 'e' || s[charpos] == 'E' || s[charpos] == 'i' || s[charpos] == 'I' || s[charpos] == 'o' || s[charpos] == 'u'))
+            {state = 2;}
+        //dwzyj
+        else if(state == 0 && (s[charpos] == 'd' || s[charpos] == 'w' || s[charpos] == 'z' || s[charpos] == 'y' || s[charpos] == 'j'))
+            {state  = 3;}
+        //s
+        else if(state == 0 && s[charpos] == 's') 
+            {state = 4;}
+        //t 
+        else if(state == 0 && s[charpos] == 't') 
+            {state = 5;}
+        //c
+        else if(state = 0 && s[charpos] == 'c')
+            {state = 6;}
+        
+        
+        
+        
         else
         if (state == 1 && s[charpos] == 'b')
         state = 2;
@@ -38,7 +69,7 @@ bool word(string s)
     // where did I end up????
     if (state == 2) return(true);  // end in a final state
      else return(false);
-    */
+    
 }
 
 // PERIOD DFA 
