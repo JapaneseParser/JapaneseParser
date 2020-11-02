@@ -19,18 +19,66 @@ bool word(string s)
 
     int state = 0;
     int charpos = 0;
-    /* replace the following todo the word dfa  **
+    /* replace the following todo the word dfa  ** */
+    /*
+        state 0 = q0 
+        state 1 = q0q1 
+        state 2 = qy 
+        state 3 = qsa 
+        state 4 = qs 
+        state 5 = qt
+        state 6 = qc
+        state 7 = q0qy ?
+    */
     while (s[charpos] != '\0')
       {
-        if (state == 0 && s[charpos] == 'a')
-        state = 1;
-        else
-        if (state == 1 && s[charpos] == 'b')
-        state = 2;
-        else
-        if (state == 2 && s[charpos] == 'b')
-        state = 2;
-        else
+        //state 0 = q0
+        //vowels, where i and e can be uppercase 
+        if(state == 0 && (s[charpos] == 'a' || s[charpos] == 'e' || s[charpos] == 'E' || s[charpos] == 'i' || s[charpos] == 'I' || s[charpos] == 'o' || s[charpos] == 'u'))
+            {state = 1;}
+        //bmknhprg
+        else if(state == 0 && (s[charpos] == 'b' || s[charpos] == 'g' || s[charpos] == 'h' || s[charpos] == 'k' || s[charpos] == 'm' || s[charpos] == 'n' || s[charpos] == 'h' || s[charpos] == 'p' || s[charpos] == 'r' || s[charpos] == 'g'))
+            {state = 2;}
+        //dwzyj
+        else if(state == 0 && (s[charpos] == 'd' || s[charpos] == 'w' || s[charpos] == 'z' || s[charpos] == 'y' || s[charpos] == 'j'))
+            {state  = 3;}
+        //s
+        else if(state == 0 && s[charpos] == 's') 
+            {state = 4;}
+        //t 
+        else if(state == 0 && s[charpos] == 't') 
+            {state = 5;}
+        //c
+        else if(state = 0 && s[charpos] == 'c')
+            {state = 6;}
+        
+        //state 1 = q0q1 
+        else {
+            if (state == 1 && s[charpos] == 'n')
+                {state = 7;} // --> q0qy
+            else if(state = 1 && (s[charpos] == 'b' || s[charpos] == 'g' || s[charpos] == 'h' || s[charpos] == 'k' || s[charpos] == 'm' || s[charpos] == 'n' || s[charpos] == 'h' || s[charpos] == 'p' || s[charpos] == 'r' || s[charpos] == 'g'))
+                {state = 2;} 
+            else if(state = 1 && (s[charpos] == 'a' || s[charpos] == 'e' || s[charpos] == 'E' || s[charpos] == 'i' || s[charpos] == 'I' || s[charpos] == 'o' || s[charpos] == 'u'))
+                {state = 1;}
+            else if(state == 0 && (s[charpos] == 'd' || s[charpos] == 'w' || s[charpos] == 'z' || s[charpos] == 'y' || s[charpos] == 'j'))
+                {state  = 3;}
+            else if(state == 0 && s[charpos] == 's') 
+                {state = 4;}
+            else if(state == 0 && s[charpos] == 't') 
+                {state = 5;}
+            else if(state = 0 && s[charpos] == 'c')
+                {state = 6;}
+        
+        //state 2 = qy 
+        else {
+           if (state == 2 && (s[charpos] == 'a' || s[charpos] == 'e' || s[charpos] == 'E' || s[charpos] == 'i' || s[charpos] == 'I' || s[charpos] == 'o' || s[charpos] == 'u'))
+                {state = 1;}
+            
+        
+            
+            
+            
+            else
         return(false);
         charpos++;
       }//end of while
@@ -38,7 +86,7 @@ bool word(string s)
     // where did I end up????
     if (state == 2) return(true);  // end in a final state
      else return(false);
-    */
+    
 }
 
 // PERIOD DFA 
