@@ -63,6 +63,7 @@ bool word(string s)
            {
                state = 6;
            }
+           else break;
        }
        else if (state == 1)
        {
@@ -95,6 +96,7 @@ bool word(string s)
            {
                state = 6;
            }
+           else break;
        }
        else if (state == 2)
        {
@@ -107,6 +109,7 @@ bool word(string s)
            {
                state = 3;
            }
+           else break;
        }
        else if (state == 3)
        {
@@ -115,6 +118,7 @@ bool word(string s)
            {
                state = 1;
            }
+           else break;
        }
        else if (state == 4)
        {
@@ -127,6 +131,7 @@ bool word(string s)
            {
                state = 3;
            }
+           else break;
        }
        else if (state == 5)
        {
@@ -139,6 +144,7 @@ bool word(string s)
            {
                state = 3;
            }
+           else break;
        }
        else if (state == 6)
        {
@@ -147,6 +153,7 @@ bool word(string s)
            {
                state = 3;
            }
+           else break;
        }
        else if (state == 7)
        {
@@ -176,11 +183,10 @@ bool word(string s)
            {
                state = 6;
            }
+           else break;
        }
        
     //end of while
-    if (state == 0 && charpos > 0)
-        return false;
     charpos++;
    }
  // where did I end up????
