@@ -144,16 +144,7 @@ bool word(string s)
 bool period(string s)
 {  // complete this **
     
-   int state = 0; 
-   int charpos = 0; 
-    
-    while(s[charpos] != '\0')
-    {
-      if(state == 0 && s[charpos] == '.') 
-          state =  ; // not sure what state it will end up at
-      else 
-          return(false); 
-    
+
     
 }
 
