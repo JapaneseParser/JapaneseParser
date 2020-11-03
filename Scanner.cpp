@@ -100,7 +100,21 @@ bool word(string s)
              if(state = 6 && s[charpos] == 'h'
                 {state = 3;}
                 
-       //state 7 = q0qy ? 
+       //state 7 = q0qy 
+       else {         
+           if(state == 7 && (s[charpos] == 'a' || s[charpos] == 'e' || s[charpos] == 'E' || s[charpos] == 'i' || s[charpos] == 'I' || s[charpos] == 'o' || s[charpos] == 'u'))
+               {state = 1;}
+           else if(state == 7 && (s[charpos] == 'b' || s[charpos] == 'g' || s[charpos] == 'h' || s[charpos] == 'k' || s[charpos] == 'm' || s[charpos] == 'n' || s[charpos] == 'h' || s[charpos] == 'p' || s[charpos] == 'r' || s[charpos] == 'g'))
+               {state = 2;}
+           else if(state == 7 && (s[charpos] == 'd' || s[charpos] == 'w' || s[charpos] == 'z' || s[charpos] == 'y' || s[charpos] == 'j'))
+               {state  = 3;}
+           else if(state == 7 && s[charpos] == 's') 
+               {state = 4;}
+           else if(state == 7 && s[charpos] == 't') 
+               {state = 5;}
+           else if(state = 7 && s[charpos] == 'c')
+               {state = 6;}
+        
             
             
             else {
@@ -112,13 +126,15 @@ bool word(string s)
               }
             }
           }
+       }        
+       
                 
-        charpos++;
+                charpos++;
       }//end of while
 
     // where did I end up????
     // want to be in q0q1 | q0qy 
-    if (state == 2) return(true);  // end in a final state
+    if (state == 1 || state == 7) return(true);  // end in a final state
      else return(false);
     
 }
