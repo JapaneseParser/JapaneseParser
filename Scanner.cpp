@@ -117,6 +117,7 @@ bool word(string s)
       }//end of while
 
     // where did I end up????
+    // want to be in q0q1 | q0qy 
     if (state == 2) return(true);  // end in a final state
      else return(false);
     
