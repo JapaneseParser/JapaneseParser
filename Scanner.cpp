@@ -12,7 +12,7 @@ using namespace std;
 // --------- Two DFAs ---------------------------------
 
 // WORD DFA 
-// Done by: Elisha Nicolas
+// Done by: **
 // RE:   **
 bool word(string s)
 {
@@ -59,7 +59,7 @@ bool word(string s)
                state = 5;
            }
            //c
-           else if (state = 0 && s[charpos] == 'c')
+           else if (state == 0 && s[charpos] == 'c')
            {
                state = 6;
            }
@@ -91,7 +91,7 @@ bool word(string s)
            {
                state = 5;
            }
-           else if (state = 0 && s[charpos] == 'c')
+           else if (state == 0 && s[charpos] == 'c')
            {
                state = 6;
            }
@@ -177,22 +177,20 @@ bool word(string s)
                state = 6;
            }
        }
-       else
-       {
-       return false;
-        }
-      
+       
     //end of while
+    if (state == 0 && charpos > 0)
+        return false;
     charpos++;
    }
-          // where did I end up????
-          // want to be in q0q1 | q0qy 
-            if (state == 1 || state == 7) return(true);  // end in a final state
-            else return(false);
+ // where did I end up????
+ // want to be in q0q1 | q0qy 
+ if (state == 1 || state == 7) return(true);  // end in a final state
+ else return(false);
 }
 
 // PERIOD DFA 
-// Done by: **
+// Done by: 
 bool period(string s)
 {  // complete this **
     if (s == ".")
@@ -272,6 +270,8 @@ tokentype Convert(string str)
         return PRONOUN;
     else if (str == "CONNECTOR")
         return CONNECTOR;
+    else if (str == "ERROR")
+        return ERROR;
 }
 
 bool found(tokentype& type, string& w)
@@ -284,8 +284,6 @@ bool found(tokentype& type, string& w)
             type = Convert(reserved_word[i][1]);
             return true;
         }
-        else
-            return false;
     }
     return false;
 }
@@ -387,12 +385,12 @@ int scanner(tokentype& tt, string& w)
     }
     else if (period(w))
     {
-        //dunno what to do here
-        found(tt, w);
+        tt = PERIOD;
     }
     else
     {
-        cout << "Lexical Error, Token: " << tokenName[3] << endl;
+        cout << "Lexical Error, " << w << " is not a valid token." << endl;
+        tt = Convert(tokenName[14]);
     }
 
 }//the end of scanner
