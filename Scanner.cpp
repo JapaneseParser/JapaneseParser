@@ -73,13 +73,46 @@ bool word(string s)
         else {
            if (state == 2 && (s[charpos] == 'a' || s[charpos] == 'e' || s[charpos] == 'E' || s[charpos] == 'i' || s[charpos] == 'I' || s[charpos] == 'o' || s[charpos] == 'u'))
                 {state = 1;}
+           else if(state == 2 && s[charpos] == 'y')
+                {state = 3;} 
+           
+        //state 3 = qsa 
+        else { 
+             if (state == 3 && (s[charpos] == 'a' || s[charpos] == 'e' || s[charpos] == 'E' || s[charpos] == 'i' || s[charpos] == 'I' || s[charpos] == 'o' || s[charpos] == 'u'))
+                {state = 1;}
             
-        
+       //state 4 = qs
+       else {
+            if (state == 4 && (s[charpos] == 'a' || s[charpos] == 'e' || s[charpos] == 'E' || s[charpos] == 'i' || s[charpos] == 'I' || s[charpos] == 'o' || s[charpos] == 'u'))
+                {state = 1;}
+            else if (state == 4  && s[charpos] == 'h')
+                {state = 3;} 
+           
+       //state 5 = qt 
+       else { 
+            if (state == 5 && (s[charpos] == 'a' || s[charpos] == 'e' || s[charpos] == 'E' || s[charpos] == 'i' || s[charpos] == 'I' || s[charpos] == 'o' || s[charpos] == 'u'))
+                {state = 1;}
+           else if(state == 5 && s[charpos] == 's')
+                {state = 3;}
+           
+       //state 6 = qc
+        else {
+             if(state = 6 && s[charpos] == 'h'
+                {state = 3;}
+                
+       //state 7 = q0qy ? 
             
             
-            
-            else
-        return(false);
+            else {
+                
+                return(false);
+                
+                  }
+                }
+              }
+            }
+          }
+                
         charpos++;
       }//end of while
 
