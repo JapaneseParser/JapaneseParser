@@ -18,17 +18,7 @@ bool word(string s)
 {
    int state = 0;
    int charpos = 0;
-    /* replace the following todo the word dfa  **
-      /*
-        state 0 = q0 
-        state 1 = q0q1 
-        state 2 = qy 
-        state 3 = qsa 
-        state 4 = qs 
-        state 5 = qt
-        state 6 = qc
-        state 7 = q0qy ?
-    */
+  
    while (s[charpos] != '\0')
    {
        //state 0 = q0
