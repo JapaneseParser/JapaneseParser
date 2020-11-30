@@ -170,7 +170,10 @@ void story()
         cout << "Successfully Parsed <story>" << endl; 
          break; 
    }
-   s(); 
+   s();
+   
+}
+
 string filename;
 
 //----------- Driver ---------------------------
