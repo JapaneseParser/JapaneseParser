@@ -12,13 +12,23 @@ using namespace std;
 // --------- Two DFAs ---------------------------------
 
 // WORD DFA 
-// Done by: **
-// RE:   **
+// Done by: Trey Stone
+// RE:   (eofm)|(((a|e|E|i|I|o|u))?(((((b|g|h|k|m|n|h|p|r|h)y?)|(d|w|z|y|j)|(t(s?))|(ch?)|s(h?))((a|e|E|i|I|o|u))+|s|n))*)
 bool word(string s)
 {
    int state = 0;
    int charpos = 0;
-  
+    /* replace the following todo the word dfa  **
+      /*
+        state 0 = q0 
+        state 1 = q0q1 
+        state 2 = qy 
+        state 3 = qsa 
+        state 4 = qs 
+        state 5 = qt
+        state 6 = qc
+        state 7 = q0qy ?
+    */
    while (s[charpos] != '\0')
    {
        //state 0 = q0
@@ -186,7 +196,7 @@ bool word(string s)
 }
 
 // PERIOD DFA 
-// Done by: 
+// Done by: Trey Stone
 bool period(string s)
 {  // complete this **
     if (s == ".")
@@ -196,7 +206,7 @@ bool period(string s)
 
 // ------ Three  Tables -------------------------------------
 
-// TABLES Done by: Josh Mumford, 
+// TABLES Done by: Josh Mumford, Elisha Nicolas
 
 // ** Update the tokentype to be WORD1, WORD2, PERIOD, ERROR, EOFM, etc.
 enum tokentype { WORD1,WORD2,PERIOD, VERB, VERBNEG, VERBPAST, VERBPASTNEG, IS, WAS, OBJECT, SUBJECT
@@ -340,7 +350,7 @@ ifstream fin;  // global stream for reading from the input file
 
 // Scanner processes only one word each time it is called
 // Gives back the token type and the word itself
-// ** Done by: Josh Mumford, 
+// Done by: Josh Mumford, Elisha Nicolas
 int scanner(tokentype& tt, string& w)
 {
     // ** Grab the next word from the file via fin
@@ -372,9 +382,9 @@ int scanner(tokentype& tt, string& w)
         }
         else if (!found(tt, w))
         {
-            if (check_last(w.back()))
+            if (check_last(w[w.length()-1]))
             {
-                tt = getWordType(w.back());
+                tt = getWordType(w[w.length()-1]);
             }
         }
 
