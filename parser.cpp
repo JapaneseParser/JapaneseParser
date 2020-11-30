@@ -165,10 +165,13 @@ void story()
 {
    cout << "Processing <story>" << endl; 
    s(); 
-   while (true) == EOFM)
+   while (true)
    {
+      if(next_token() == EOFM)
+      {
         cout << "Successfully Parsed <story>" << endl; 
          break; 
+      }
    }
    s();
    
