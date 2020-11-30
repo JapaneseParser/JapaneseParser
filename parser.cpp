@@ -158,20 +158,36 @@ void tense_non_term()
         syntaxerror2(saved_lexeme, );
     }
 }
+
+// Grammar: <story> ::= <s> {<s>}
+// Done by: Elisha Nicolas
+void story() 
+{
+   cout << "Processing <story>" << endl; 
+   s(); 
+   while (true) == EOFM)
+   {
+        cout << "Successfully Parsed <story>" << endl; 
+         break; 
+   }
+   s(); 
 string filename;
 
 //----------- Driver ---------------------------
 
 // The new test driver to start the parser
-// Done by:  **
+// Done by:  Elisha Nicolas
 int main()
 {
   cout << "Enter the input file name: ";
   cin >> filename;
   fin.open(filename.c_str());
 
+   
   //** calls the <story> to start parsing
   //** closes the input file 
+   story();
+   fin.close(); 
 
 }// end
 //** require no other input files!
