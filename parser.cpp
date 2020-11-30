@@ -21,18 +21,26 @@ using namespace std;
 // ** Need syntaxerror1 and syntaxerror2 functions (each takes 2 args)
 //    to display syntax error messages as specified by me.  
 
-// Type of error: **
-// Done by: ** 
-void syntaxerror1(saved_token, saved_lexeme){    }
-// Type of error: **
-// Done by: ** 
-void syntaxerror2(saved_lexeme, ) {    }
+bool traceFlag;
+
+// Type of error: Unexpected token
+// Done by: Trey Stone
+void syntaxerror1(string inputLexeme, tokentype expectedToken){
+    if (traceFlag) cout << format("SYNTAX ERROR: expected {} but found {}", tokenname[expectedToken], inputLexeme) << endl;
+    exit(1);
+}
+// Type of error: Unknown token
+// Done by: Trey Stone
+void syntaxerror2(string inputLexeme, string functionName) {
+    if (traceFlag) cout << format("SYNTAX ERROR: unexpected {} found in {}", inputLexeme, functionName) << endl;
+    exit(1);
+}
 
 // ** Need the updated match and next_token with 2 global vars
 // saved_token and saved_lexeme
 enum tokentype {
-    WORD1, WORD2, PERIOD, VERB, VERBNEG, VERBPAST, VERBPASTNEG, IS, WAS, OBJECT, SUBJECT
-    , DESTINATION, PRONOUN, CONNECTOR, ERROR, EOFM
+    WORD1, WORD2, PERIOD, VERB, VERBNEG, VERBPAST, VERBPASTNEG, IS, WAS,
+    OBJECT, SUBJECT, DESTINATION, PRONOUN, CONNECTOR, ERROR, EOFM
 };
 
 string saved_lexeme;
@@ -42,7 +50,7 @@ tokentype saved_token;
 // Purpose: To look ahead to check the next token from the scanner. 
 //Returns the saved_token but does not eat up the token.
 // Done by: Josh Mumford
-token_type next_token()
+tokentype next_token()
 {
     //declare a bool to check if there is a saved token
     bool token_available = false;
@@ -69,18 +77,21 @@ token_type next_token()
 // Purpose: Checks and uses the expected token. Compares the expected to the next_token.
 //If different generate a syntax error and handle the error.
 //else set the token_available bool to false and return true
-// Done by: Josh Mumford
+// Done by: Josh Mumford, Trey Stone
 boolean match(tokentype expected) 
 {
     //if the next_token and the expected do not match. generate syntax error
     //else set token_available to false and display the matched token
     //returns true if succeeds
-    if(next_token() != expected)
-        syntaxerror2(saved_lexeme, )
+
+    tokentype next = next_token();
+
+    if(next != expected)
+        syntaxerror1(saved_lexeme, next)
     else
     {
         token_available = false;
-        cout << "Matched " << saved_token << endl;
+        if (traceFlag) cout << "Matched " << saved_token << endl;
         return true;
     }
 }
@@ -95,7 +106,7 @@ boolean match(tokentype expected)
 // Done by: Josh Mumford
 void noun_non_term()
 {
-    cout << "Processing <noun>" << endl;
+    if (traceFlag) cout << "Processing <noun>" << endl;
     switch (next_token())
     {
     case WORD1:
@@ -106,22 +117,29 @@ void noun_non_term()
         break;
     }
     default:
-        syntaxerror2(saved_lexeme, );
+        syntaxerror2(saved_lexeme, "noun");
 }
 
 // Grammar: <verb> ::= WORD2
-// Done by: Josh Mumford
+// Done by: Josh Mumford, Trey Stone
 void verb_non_term()
 {
-    cout << "Processing <verb>" << endl;
-    match(WORD2);
+    if (traceFlag) cout << "Processing <verb>" << endl;
+    switch (next_token())
+    {
+    case WORD2:
+        match(WORD2);
+        break;
+    default:
+        syntaxerror2(saved_lexeme, "verb");
+    }
 }
 
 // Grammar: <be> ::= IS | WAS
 // Done by: Josh Mumford
 void be_non_term()
 {
-    cout << "Processing <be>" << endl;
+    if (traceFlag) cout << "Processing <be>" << endl;
     switch (next_token())
     {
     case IS:
@@ -131,7 +149,7 @@ void be_non_term()
         match(WAS);
         break;
     default:
-        syntaxerror2(saved_lexeme, );
+        syntaxerror2(saved_lexeme, "be");
     }
 }
 
@@ -139,7 +157,7 @@ void be_non_term()
 // Done by: Josh Mumford
 void tense_non_term()
 {
-    cout << "Processing <tense>" << endl;
+    if (traceFlag) cout << "Processing <tense>" << endl;
     switch (next_token())
     {
     case VERBPAST:
@@ -155,13 +173,96 @@ void tense_non_term()
         match(VERBNEG);
         break;
     default:
-        syntaxerror2(saved_lexeme, );
+        syntaxerror2(saved_lexeme, "tense");
+    }
+}
+
+// Grammar: <after subject> ::= <verb> <tense> PERIOD | <noun> <after noun>
+// Done by: Trey Stone
+void after_subject_non_term()
+{
+    if (traceFlag) cout << "Processing <after subject>" << endl;
+    switch (next_token())
+    {
+    case WORD2:
+        verb_non_term();
+        tense_non_term();
+        match(PERIOD);
+        break;
+    case WORD1:
+    case PRONOUN:
+        noun_non_term();
+        after_noun();
+        break;
+    default:
+        syntaxerror2(saved_lexeme, "after_subject");
+    }
+}
+
+// Grammar: <after noun> ::= <be> PERIOD | DESTINATION <after destination> | OBJECT <after object>
+// Done by: Trey Stone
+void after_noun_non_term()
+{
+    if (traceFlag) cout << "Processing <after noun>" << endl;
+    switch (next_token())
+    {
+    case IS:
+    case WAS:
+        be_non_term();
+        match(PERIOD);
+        break;
+    case DESTINATION:
+        match(DESTINATION);
+        after_destination_non_term();
+    case OBJECT:
+        match(OBJECT);
+        after_object();
+        break;
+    default:
+        syntaxerror2(saved_lexeme, "after_noun");
+    }
+}
+
+// Grammar: <after object> ::= <after destination> | <noun> DESTINATION <after destination>
+// Done by: Trey Stone
+void after_object_non_term()
+{
+    if (traceFlag) cout << "Processing <after object>" << endl;
+    switch (next_token())
+    {
+    case WORD2:
+        after_destination_non_term();
+        break;
+    case WORD1:
+    case PRONOUN:
+        noun_non_term();
+        match(DESTINATION);
+        after_destination_non_term();
+    default:
+        syntaxerror2(saved_lexeme, "after_object");
+    }
+}
+
+// Grammar: <after destination> ::= <verb> <tense> PERIOD
+// Done by: Trey Stone
+void after_destination_non_term()
+{
+    if (traceFlag) cout << "Processing <after destination>" << endl;
+    switch (next_token())
+    {
+    case WORD2:
+        verb_non_term();
+        tense_non_term();
+        match(PERIOD);
+        break;
+    default:
+        if (traceFlag) syntaxerror2(saved_lexeme, "after_destination");
     }
 }
 
 // Grammar: <story> ::= <s> {<s>}
 // Done by: Elisha Nicolas
-void story() 
+void story_non_term() 
 {
    cout << "Processing <story>" << endl; 
    s(); 
@@ -174,7 +275,6 @@ void story()
       }
    }
    s();
-   
 }
 
 string filename;
@@ -182,18 +282,43 @@ string filename;
 //----------- Driver ---------------------------
 
 // The new test driver to start the parser
-// Done by:  Elisha Nicolas
+// Done by: Elisha Nicolas, Trey Stone
 int main()
 {
-  cout << "Enter the input file name: ";
-  cin >> filename;
-  fin.open(filename.c_str());
+    cout << "Enter the input file name: ";
+    cin >> filename;
+    fin.open(filename.c_str());
 
-   
-  //** calls the <story> to start parsing
-  //** closes the input file 
-   story();
-   fin.close(); 
+    char traceChar;
+
+trace:
+    cout << "Print tracing messages? (y/n): ";
+    cin >> traceChar;
+
+    switch (traceChar)
+    {
+    
+    case 'y':
+    case 'Y':
+        traceFlag = true;
+        break;
+    case 'n':
+    case 'N':
+        traceFlag = false;
+        break;
+    default:
+        goto trace;
+    }
+
+
+    
+
+    story_non_term();
+
+    fin.close();
+
+    //** calls the <story> to start parsing
+    //** closes the input file 
 
 }// end
 //** require no other input files!
