@@ -27,7 +27,7 @@ bool traceFlag;
 // Type of error: Unexpected token
 // Done by: Trey Stone
 void syntaxerror1(string inputLexeme, tokentype expectedToken){
-    if (traceFlag) cout << format("SYNTAX ERROR: expected {} but found {}", tokenname[expectedToken], inputLexeme) << endl;
+    if (traceFlag) cout << format("SYNTAX ERROR: expected {} but found {}", tokenName[expectedToken], inputLexeme) << endl;
     exit(1);
 }
 // Type of error: Unknown token
