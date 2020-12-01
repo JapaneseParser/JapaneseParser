@@ -646,7 +646,7 @@ void s()
         syntaxerror2(saved_lexeme, "s");
     }
 
-    match(SUBJECT)
+    match(SUBJECT);
 
     after_subject_non_term();
 }
