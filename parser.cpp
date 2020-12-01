@@ -376,7 +376,8 @@ int scanner(tokentype& tt, string& w)
     {
         if (found(tt, w))
         {
-            cout << "Reserved" << endl;
+            //cout << "Reserved" << endl;
+            cout << "Scanner called using the word: " << w << endl;
         }
         else if (!found(tt, w))
         {
@@ -461,7 +462,7 @@ bool match(tokentype expected)
     else
     {
         token_available = false;
-        if (traceFlag) cout << "Matched " << saved_token << endl;
+        if (traceFlag) cout << "Matched " << tokenName[saved_token] << endl;
         return true;
     }
 }
@@ -632,22 +633,20 @@ void after_subject_non_term()
 
 void s()
 {
-    if (next_token() == CONNECTOR) {
-        match(CONNECTOR)
-    }
-
     switch (next_token())
     {
+    case CONNECTOR:
+        match(CONNECTOR);
+        break;
     case WORD1:
+        noun_non_term();
+        break;
     case PRONOUN:
         noun_non_term();
         break;
-    default:
-        syntaxerror2(saved_lexeme, "s");
     }
 
     match(SUBJECT);
-
     after_subject_non_term();
 }
 
@@ -655,20 +654,17 @@ void s()
 // Done by: Elisha Nicolas
 void story_non_term() 
 {
-    cout << "Processing <story>" << endl; 
-
-    while (true)
-    {
-        s(); 
-        if(next_token() == EOFM)
-        {
-            cout << "Successfully Parsed <story>" << endl; 
-            break; 
-        }
-    }
+   cout << "Processing <story>" << endl; 
+   s(); 
+   while (true)
+   {
+      if(next_token() == EOFM)
+      {
+        cout << "Successfully Parsed <story>" << endl; 
+         break; 
+      }
+   }
 }
-
-
 
 string filename;
 
@@ -681,6 +677,10 @@ int main()
     cout << "Enter the input file name: ";
     cin >> filename;
     fin.open(filename.c_str());
+    if (fin.is_open())
+        cout << "open!!" << endl;
+    else
+        cout << "file not found" << endl;
 
     char traceChar;
 
