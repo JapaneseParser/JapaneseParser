@@ -377,7 +377,7 @@ int scanner(tokentype& tt, string& w)
         if (found(tt, w))
         {
             //cout << "Reserved" << endl;
-            cout << "Scanner called using the word: " << w << endl;
+            //cout << "Scanner called using the word: " << w << endl;
         }
         else if (!found(tt, w))
         {
@@ -432,6 +432,7 @@ tokentype next_token()
         //call the scanner to grab new token and save word to saved_lexeme
         //set token_available to true
         scanner(saved_token, saved_lexeme);
+        cout << "Scanner called using the word: " << saved_lexeme << endl;
         //saved_lexeme = saved_lexeme;
         token_available = true;
 
@@ -574,12 +575,15 @@ void after_object_non_term()
     {
     case WORD2:
         after_destination_non_term();
+        //verb_non_term();
         break;
     case WORD1:
     case PRONOUN:
         noun_non_term();
         match(DESTINATION);
         after_destination_non_term();
+        //verb_non_term();
+        break;
     default:
         syntaxerror2(saved_lexeme, "after_object");
     }
@@ -600,6 +604,7 @@ void after_noun_non_term()
     case DESTINATION:
         match(DESTINATION);
         after_destination_non_term();
+        break;
     case OBJECT:
         match(OBJECT);
         after_object_non_term();
@@ -631,26 +636,22 @@ void after_subject_non_term()
     }
 }
 
-// Grammar: <s> ::= [CONNECTOR] <noun> SUBJECT <after_subject>
-// Done by: Elisha Nicolas
 void s()
 {
-    if (next_token() == CONNECTOR) {
-        match(CONNECTOR);
-    }
-
+    cout << "Processing <s>" << endl;
     switch (next_token())
     {
+    case CONNECTOR:
+        match(CONNECTOR);
     case WORD1:
+        noun_non_term();
+        break;
     case PRONOUN:
         noun_non_term();
         break;
-    default:
-        syntaxerror2(saved_lexeme, "s");
     }
 
     match(SUBJECT);
-
     after_subject_non_term();
 }
 
@@ -658,17 +659,19 @@ void s()
 // Done by: Elisha Nicolas
 void story_non_term() 
 {
-    cout << "Processing <story>" << endl; 
-
-    while (true)
-    {
-        s(); 
-        if(next_token() == EOFM)
-        {
-            cout << "Successfully Parsed <story>" << endl; 
-            break; 
-        }
-    }
+   cout << "Processing <story>" << endl; 
+   s(); 
+   while (true)
+   {
+       cout << saved_lexeme << endl;
+      next_token();
+      if(saved_lexeme == "eofm")
+      {
+        cout << "Successfully Parsed <story>" << endl; 
+         break; 
+      }
+      s();
+   }
 }
 
 string filename;
