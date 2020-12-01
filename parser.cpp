@@ -631,22 +631,26 @@ void after_subject_non_term()
     }
 }
 
+// Grammar: <s> ::= [CONNECTOR] <noun> SUBJECT <after_subject>
+// Done by: Elisha Nicolas
 void s()
 {
+    if (next_token() == CONNECTOR) {
+        match(CONNECTOR);
+    }
+
     switch (next_token())
     {
-    case CONNECTOR:
-        match(CONNECTOR);
-        break;
     case WORD1:
-        noun_non_term();
-        break;
     case PRONOUN:
         noun_non_term();
         break;
+    default:
+        syntaxerror2(saved_lexeme, "s");
     }
 
     match(SUBJECT);
+
     after_subject_non_term();
 }
 
@@ -654,16 +658,17 @@ void s()
 // Done by: Elisha Nicolas
 void story_non_term() 
 {
-   cout << "Processing <story>" << endl; 
-   s(); 
-   while (true)
-   {
-      if(next_token() == EOFM)
-      {
-        cout << "Successfully Parsed <story>" << endl; 
-         break; 
-      }
-   }
+    cout << "Processing <story>" << endl; 
+
+    while (true)
+    {
+        s(); 
+        if(next_token() == EOFM)
+        {
+            cout << "Successfully Parsed <story>" << endl; 
+            break; 
+        }
+    }
 }
 
 string filename;
