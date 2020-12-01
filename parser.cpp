@@ -261,6 +261,25 @@ void after_destination_non_term()
     }
 }
 
+//Grammar: <s>::= [CONNECTOR] <noun> SUBJECT <after subject> 
+//Done by: Elisha Nicolas
+void s() {
+	cout << "Processing <s>" << endl;
+	switch (next_token()) {
+	case CONNECTOR:
+		match(CONNECTOR);
+		noun();
+		match(SUBJECT);
+		after_subject();
+		break;
+	default:
+		noun();
+		match(SUBJECT);
+		after_subject();
+		break;
+	}
+}
+
 // Grammar: <story> ::= <s> {<s>}
 // Done by: Elisha Nicolas
 void story_non_term() 
