@@ -412,6 +412,10 @@ struct dict_Node
 vector<dict_Node> dict;
 string saved_E_word;
 
+string saved_lexeme;
+tokentype saved_token;
+bool token_available;
+
 void readFile()
 {
     ifstream fin;
@@ -480,6 +484,14 @@ void getEWord(string &saved_lexeme, string &Eword)
     }
 }
 
+void gen(string type)
+{
+    if (type == "TENSE")
+        cout << type + ":" << "\t" << saved_token << endl;
+    else
+        cout << type + ":" << "\t" << saved_E_word << endl;
+}
+
 
 // Type of error: Unexpected token
 // Done by: Trey Stone
@@ -493,10 +505,6 @@ void syntaxerror2(string inputLexeme, string functionName) {
     if (traceFlag) cout << "SYNTAX ERROR: unexpected " << inputLexeme << "found in " << functionName << endl;
     exit(1);
 }
-
-string saved_lexeme;
-tokentype saved_token;
-bool token_available;
 
 // Purpose: To look ahead to check the next token from the scanner. 
 //Returns the saved_token but does not eat up the token.
@@ -723,6 +731,9 @@ void s()
     {
     case CONNECTOR:
         match(CONNECTOR);
+       // getEWord(string & saved_lexeme, string & Eword)
+        getEWord(saved_lexeme, saved_E_word);
+        gen("CONNECTOR");
     case WORD1:
         noun_non_term();
         break;
