@@ -655,7 +655,9 @@ void after_destination_non_term()
 }
 
 // Grammar: <after object> ::= <after destination> | <noun> DESTINATION <after destination>
-// Done by: Trey Stone
+// New Grammar: <after object> ::= <verb>#getEword# #gen(“ACTION”)# <tense> #gen(“TENSE”)#  PERIOD |
+                    //<noun> #getEword# DESTINATION #gen(“TO”)# <verb>#getEword# #gen(“ACTION”)#  <tense> #gen(“TENSE”)# PERIOD
+// Done by: Trey Stone, Elisha Nicolas
 void after_object_non_term()
 {
     if (traceFlag) cout << "Processing <after object>" << endl;
@@ -664,11 +666,24 @@ void after_object_non_term()
     case WORD2:
         after_destination_non_term();
         //verb_non_term();
+        //getEWord(); 
+        //gen("ACTION");
+        //tense(); 
+        //gen("TENSE"); 
+        //match(PERIOD);
         break;
     case WORD1:
     case PRONOUN:
         noun_non_term();
+        getEword(); 
         match(DESTINATION);
+        gen("TO"); 
+        verb_non_term(); 
+        getEWord(); 
+        gen("ACTION"); 
+        tense_non_term(); 
+        gen("TENSE"); 
+        match(PERIOD);
         after_destination_non_term();
         //verb_non_term();
         break;
@@ -678,7 +693,9 @@ void after_object_non_term()
 }
 
 // Grammar: <after noun> ::= <be> PERIOD | DESTINATION <after destination> | OBJECT <after object>
-// Done by: Trey Stone
+// New Grammar: <after noun> ::= <be>#gen(“DESCRIPTION”)# #gen(“TENSE”)# PERIOD  | DESTINATION #gen(“TO”)# <verb> #getEword# #gen(“ACTION”)# <tense> #gen(“TENSE”)# PERIOD |
+                   // OBJECT #gen(“OBJECT”)#  <after object>
+// Done by: Trey Stone, Elisha Nicolas
 void after_noun_non_term()
 {
     if (traceFlag) cout << "Processing <after noun>" << endl;
@@ -687,14 +704,23 @@ void after_noun_non_term()
     case IS:
     case WAS:
         be_non_term();
+        gen("DESCRIPTION"); 
+        gen("TENSE"); 
         match(PERIOD);
         break;
     case DESTINATION:
         match(DESTINATION);
+        gen("TO");
+        verb_non_term(); 
+        getEWord(); 
+        gen("ACTION"); 
+        tense_non_term(); 
+        natch(PERIOD); 
         after_destination_non_term();
         break;
     case OBJECT:
         match(OBJECT);
+        gen("OBJECT")
         after_object_non_term();
         break;
     default:
@@ -703,7 +729,8 @@ void after_noun_non_term()
 }
 
 // Grammar: <after subject> ::= <verb> <tense> PERIOD | <noun> <after noun>
-// Done by: Trey Stone
+// New Grammar:<after subject> ::= <verb> #getEword# #gen(“ACTION”)# <tense> #gen(“TENSE”)#  PERIOD | <noun> #getEword# <after noun>
+// Done by: Trey Stone, Elisha Nicolas
 void after_subject_non_term()
 {
     if (traceFlag) cout << "Processing <after subject>" << endl;
@@ -711,12 +738,16 @@ void after_subject_non_term()
     {
     case WORD2:
         verb_non_term();
+        getEWord(); 
+        gen("ACTION");
         tense_non_term();
+        gen("TENSE"); 
         match(PERIOD);
         break;
     case WORD1:
     case PRONOUN:
         noun_non_term();
+        getEWord();
         after_noun_non_term();
         break;
     default:
