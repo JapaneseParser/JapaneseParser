@@ -675,7 +675,7 @@ void after_object_non_term()
     case WORD1:
     case PRONOUN:
         noun_non_term();
-        getEword(); 
+        getEWord(); 
         match(DESTINATION);
         gen("TO"); 
         verb_non_term(); 
@@ -715,12 +715,12 @@ void after_noun_non_term()
         getEWord(); 
         gen("ACTION"); 
         tense_non_term(); 
-        natch(PERIOD); 
+        match(PERIOD); 
         after_destination_non_term();
         break;
     case OBJECT:
         match(OBJECT);
-        gen("OBJECT")
+        gen("OBJECT");
         after_object_non_term();
         break;
     default:
