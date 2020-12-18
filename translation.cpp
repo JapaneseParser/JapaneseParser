@@ -777,7 +777,7 @@ string filename;
 int main()
 {
     readFile();
-    displayDict();
+    //displayDict();
     cout << endl;
 
     cout << "Enter the input file name: ";
