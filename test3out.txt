@@ -1,0 +1,12 @@
+Enter the input file name: partCtest3.txt
+Print tracing messages? (y/n): y
+Processing <story>
+Processing <s>
+Scanner called using the word: dakara
+Matched CONNECTOR
+CONNECTOR:	Therefore
+Processing <noun>
+Scanner called using the word: watashi
+Matched PRONOUN
+Scanner called using the word: de
+SYNTAX ERROR: Expected SUBJECT but found de

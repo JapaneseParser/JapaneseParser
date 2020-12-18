@@ -1,0 +1,7 @@
+Enter the input file name: partCtest6.txt
+Print tracing messages? (y/n): y
+Processing <story>
+Processing <s>
+Lexical Error, apple is not a valid token.
+Scanner called using the word: apple
+SYNTAX ERROR: Unexpected apple found in s

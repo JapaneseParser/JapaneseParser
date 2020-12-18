@@ -2,6 +2,8 @@
 #include<fstream>
 #include<string>
 #include<vector>
+#include<cstdlib>
+#include<cstring>
 using namespace std;
 
 /* INSTRUCTION:  Complete all ** parts.
@@ -349,7 +351,7 @@ ifstream fin;  // global stream for reading from the input file
 
 // Scanner processes only one word each time it is called
 // Gives back the token type and the word itself
-// ** Done by: Josh Mumford, 
+// ** Done by: Josh Mumford, Trey Stone
 int scanner(tokentype& tt, string& w)
 {
     // ** Grab the next word from the file via fin
@@ -373,21 +375,9 @@ int scanner(tokentype& tt, string& w)
 
     4. Return the token type & string  (pass by reference)
     */
-    if (word(w))
-    {
-        if (found(tt, w))
-        {
-            //cout << "Reserved" << endl;
-            //cout << "Scanner called using the word: " << w << endl;
-        }
-        else if (!found(tt, w))
-        {
-            if (check_last(w.back()))
-            {
-                tt = getWordType(w.back());
-            }
-        }
-
+    if (word(w)) {
+	if (!found(tt, w) && check_last(w.back()))
+        	tt = getWordType(w.back());
     }
     else if (period(w))
     {
@@ -416,42 +406,27 @@ string saved_lexeme;
 tokentype saved_token;
 bool token_available;
 
+
+// Reads the translation tables from lexicon.txt and compiles them into an array
+// ** Done by: Trey Stone
 void readFile()
 {
+
     ifstream fin;
     fin.open("lexicon.txt", ios::in);
-
     if (fin.is_open())
     {
-        string line;
-        while (!fin.eof())
-        {
-            getline(fin, line);
-            //cout << line << endl;
 
-            if (!line.empty())
-            {
-                char* cstr = new char[line.length() + 1];
-                strcpy(cstr, line.c_str());
 
-                char* token;
-                token = strtok(cstr, " ");
+        string word;
+        
+        while (fin >> word) {
+    		dict_Node node;
+    		node.japanese_word = word;
+    		fin >> node.english_word;
 
-                vector<string> tmp;
-                while (token != 0)
-                {
-                    tmp.push_back(token);
-                    token = strtok(NULL, " ");
-                }
-                delete[] cstr;
-                cstr = NULL;
+    		dict.push_back(node);
 
-                dict_Node node;
-                node.japanese_word = tmp[0];
-                node.english_word = tmp[1];
-
-                dict.push_back(node);
-            }
         }
     }
     else
@@ -487,7 +462,7 @@ void getEWord(string &saved_lexeme, string &Eword)
 void gen(string type)
 {
     if (type == "TENSE")
-        cout << type + ":" << "\t" << saved_token << endl;
+        cout << type + ":" << "\t" << tokenName[saved_token] << endl;
     else
         cout << type + ":" << "\t" << saved_E_word << endl;
 }
@@ -496,13 +471,13 @@ void gen(string type)
 // Type of error: Unexpected token
 // Done by: Trey Stone
 void syntaxerror1(string inputLexeme, tokentype expectedToken){
-    if (traceFlag) cout << "SYNTAX ERROR: expected " << tokenName[expectedToken] << "but found " << inputLexeme << endl;
+    if (traceFlag) cout << "SYNTAX ERROR: Expected " << tokenName[expectedToken] << " but found " << inputLexeme << endl;
     exit(1);
 }
 // Type of error: Unknown token
 // Done by: Trey Stone
 void syntaxerror2(string inputLexeme, string functionName) {
-    if (traceFlag) cout << "SYNTAX ERROR: unexpected " << inputLexeme << "found in " << functionName << endl;
+    if (traceFlag) cout << "SYNTAX ERROR: Unexpected " << inputLexeme << " found in " << functionName << endl;
     exit(1);
 }
 
@@ -520,15 +495,15 @@ tokentype next_token()
         //call the scanner to grab new token and save word to saved_lexeme
         //set token_available to true
         scanner(saved_token, saved_lexeme);
-        cout << "Scanner called using the word: " << saved_lexeme << endl;
+        if (traceFlag) cout << "Scanner called using the word: " << saved_lexeme << endl;
         //saved_lexeme = saved_lexeme;
         token_available = true;
 
         //if the token is an ERROR call syntaxerror1
-        if (saved_token == ERROR)
-        {
-            syntaxerror1(saved_lexeme, saved_token);
-        }
+        //if (saved_token == ERROR)
+        //{
+        // /   syntaxerror1(saved_lexeme, saved_token);
+       	// }
     }
     //return the token
     return saved_token;
@@ -547,7 +522,7 @@ bool match(tokentype expected)
     tokentype next = next_token();
 
     if (next != expected)
-        syntaxerror1(saved_lexeme, next);
+        syntaxerror1(saved_lexeme, expected);
     else
     {
         token_available = false;
@@ -575,6 +550,7 @@ void noun_non_term()
     case PRONOUN:
         match(PRONOUN);
         break;
+	case ERROR:
     default:
         syntaxerror2(saved_lexeme, "noun");
     }
@@ -590,6 +566,7 @@ void verb_non_term()
     case WORD2:
         match(WORD2);
         break;
+	case ERROR:
     default:
         syntaxerror2(saved_lexeme, "verb");
     }
@@ -608,6 +585,7 @@ void be_non_term()
     case WAS:
         match(WAS);
         break;
+	case ERROR:
     default:
         syntaxerror2(saved_lexeme, "be");
     }
@@ -632,12 +610,14 @@ void tense_non_term()
     case VERBNEG:
         match(VERBNEG);
         break;
+	case ERROR:
     default:
         syntaxerror2(saved_lexeme, "tense");
     }
 }
 
 // Grammar: <after destination> ::= <verb> <tense> PERIOD
+// New Grammar: <verb> #getEWord# #gen("ACTION")# <tense> #gen("TENSE")# PERIOD
 // Done by: Trey Stone
 void after_destination_non_term()
 {
@@ -646,9 +626,13 @@ void after_destination_non_term()
     {
     case WORD2:
         verb_non_term();
+	getEWord(saved_lexeme, saved_E_word);
+	gen("ACTION");
         tense_non_term();
+	gen("TENSE");
         match(PERIOD);
         break;
+	case ERROR:
     default:
         if (traceFlag) syntaxerror2(saved_lexeme, "after_destination");
     }
@@ -656,7 +640,7 @@ void after_destination_non_term()
 
 // Grammar: <after object> ::= <after destination> | <noun> DESTINATION <after destination>
 // New Grammar: <after object> ::= <verb>#getEword# #gen(“ACTION”)# <tense> #gen(“TENSE”)#  PERIOD |
-                    //<noun> #getEword# DESTINATION #gen(“TO”)# <verb>#getEword# #gen(“ACTION”)#  <tense> #gen(“TENSE”)# PERIOD
+                    //<noun> #getEword# DESTINATION #gen(“TO”)# <after destination>
 // Done by: Trey Stone, Elisha Nicolas
 void after_object_non_term()
 {
@@ -665,35 +649,23 @@ void after_object_non_term()
     {
     case WORD2:
         after_destination_non_term();
-        //verb_non_term();
-        //getEWord(); 
-        //gen("ACTION");
-        //tense(); 
-        //gen("TENSE"); 
-        //match(PERIOD);
         break;
     case WORD1:
     case PRONOUN:
         noun_non_term();
-        getEWord(); 
+        getEWord(saved_lexeme, saved_E_word); 
         match(DESTINATION);
         gen("TO"); 
-        verb_non_term(); 
-        getEWord(); 
-        gen("ACTION"); 
-        tense_non_term(); 
-        gen("TENSE"); 
-        match(PERIOD);
         after_destination_non_term();
-        //verb_non_term();
         break;
+	case ERROR:
     default:
         syntaxerror2(saved_lexeme, "after_object");
     }
 }
 
 // Grammar: <after noun> ::= <be> PERIOD | DESTINATION <after destination> | OBJECT <after object>
-// New Grammar: <after noun> ::= <be>#gen(“DESCRIPTION”)# #gen(“TENSE”)# PERIOD  | DESTINATION #gen(“TO”)# <verb> #getEword# #gen(“ACTION”)# <tense> #gen(“TENSE”)# PERIOD |
+// New Grammar: <after noun> ::= <be>#gen(“DESCRIPTION”)# #gen(“TENSE”)# PERIOD  | DESTINATION #gen(“TO”)# <after_destination> |
                    // OBJECT #gen(“OBJECT”)#  <after object>
 // Done by: Trey Stone, Elisha Nicolas
 void after_noun_non_term()
@@ -711,11 +683,6 @@ void after_noun_non_term()
     case DESTINATION:
         match(DESTINATION);
         gen("TO");
-        verb_non_term(); 
-        getEWord(); 
-        gen("ACTION"); 
-        tense_non_term(); 
-        match(PERIOD); 
         after_destination_non_term();
         break;
     case OBJECT:
@@ -723,6 +690,7 @@ void after_noun_non_term()
         gen("OBJECT");
         after_object_non_term();
         break;
+	case ERROR:
     default:
         syntaxerror2(saved_lexeme, "after_noun");
     }
@@ -738,7 +706,7 @@ void after_subject_non_term()
     {
     case WORD2:
         verb_non_term();
-        getEWord(); 
+        getEWord(saved_lexeme, saved_E_word); 
         gen("ACTION");
         tense_non_term();
         gen("TENSE"); 
@@ -747,43 +715,45 @@ void after_subject_non_term()
     case WORD1:
     case PRONOUN:
         noun_non_term();
-        getEWord();
+        getEWord(saved_lexeme, saved_E_word);
         after_noun_non_term();
         break;
+	case ERROR:
     default:
         syntaxerror2(saved_lexeme, "after_subject");
     }
 }
 
+// New Grammar: <s> ::= [CONNECTOR #getEWord# #gen(CONNECTOR)#] <noun> #getEWord# SUBJECT #gen(ACTOR)# <after_subject>
+// Done by: Trey Stone, Elisha Nicolas
 void s()
 {
-    cout << "Processing <s>" << endl;
+    if (traceFlag) cout << "Processing <s>" << endl;
     switch (next_token())
     {
     case CONNECTOR:
         match(CONNECTOR);
-       // getEWord(string & saved_lexeme, string & Eword)
         getEWord(saved_lexeme, saved_E_word);
         gen("CONNECTOR");
     case WORD1:
-        noun_non_term();
-        break;
     case PRONOUN:
         noun_non_term();
+	getEWord(saved_lexeme, saved_E_word);
+	match(SUBJECT);
+	gen("ACTOR");
+	after_subject_non_term();
         break;
+	case ERROR:
     default:
-        syntaxerror1(saved_lexeme, saved_token);
+        syntaxerror2(saved_lexeme, "s");
     }
-
-    match(SUBJECT);
-    after_subject_non_term();
 }
 
 // Grammar: <story> ::= <s> {<s>}
 // Done by: Elisha Nicolas
 void story_non_term() 
 {
-   cout << "Processing <story>" << endl; 
+   if (traceFlag) cout << "Processing <story>" << endl; 
    s(); 
    while (true)
    {
@@ -791,8 +761,8 @@ void story_non_term()
       next_token();
       if(saved_lexeme == "eofm")
       {
-        cout << "Successfully Parsed <story>" << endl; 
-         break; 
+	if (traceFlag) cout << "Successfully Parsed <story>" << endl; 
+        break; 
       }
       s();
    }
@@ -813,10 +783,10 @@ int main()
     cout << "Enter the input file name: ";
     cin >> filename;
     fin.open(filename.c_str());
-    if (fin.is_open())
-        cout << "open!!" << endl;
-    else
+    if (!fin.is_open()) {
         cout << "file not found" << endl;
+	return 0;
+}
 
     char traceChar;
 

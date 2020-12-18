@@ -1,0 +1,17 @@
+Enter the input file name: partCtest4.txt
+Print tracing messages? (y/n): y
+Processing <story>
+Processing <s>
+Scanner called using the word: watashi
+Processing <noun>
+Matched PRONOUN
+Scanner called using the word: wa
+Matched SUBJECT
+ACTOR:	I/me
+Processing <after subject>
+Scanner called using the word: rika
+Processing <noun>
+Matched WORD1
+Processing <after noun>
+Scanner called using the word: mashita
+SYNTAX ERROR: Unexpected mashita found in after_noun

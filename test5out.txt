@@ -1,0 +1,6 @@
+Enter the input file name: partCtest5.txt
+Print tracing messages? (y/n): y
+Processing <story>
+Processing <s>
+Scanner called using the word: wa
+SYNTAX ERROR: Unexpected wa found in s

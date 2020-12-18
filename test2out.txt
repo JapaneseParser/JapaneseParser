@@ -1,0 +1,25 @@
+Enter the input file name: partCtest2.txt
+Print tracing messages? (y/n): y
+Processing <story>
+Processing <s>
+Scanner called using the word: soshite
+Matched CONNECTOR
+CONNECTOR:	Then
+Processing <noun>
+Scanner called using the word: watashi
+Matched PRONOUN
+Scanner called using the word: wa
+Matched SUBJECT
+ACTOR:	I/me
+Processing <after subject>
+Scanner called using the word: rika
+Processing <noun>
+Matched WORD1
+Processing <after noun>
+Scanner called using the word: desu
+Processing <be>
+Matched IS
+DESCRIPTION:	rika
+TENSE:	IS
+Scanner called using the word: ne
+SYNTAX ERROR: Expected PERIOD but found ne
